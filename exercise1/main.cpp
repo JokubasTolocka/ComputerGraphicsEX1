@@ -90,8 +90,8 @@ int main() try
 	auto const fbheight = std::size_t(iheight);
 
 	MousePos position;
-
 	glfwSetWindowUserPointer(window, &position);
+
 	glfwSetKeyCallback( window, &glfw_callback_key_ );
 	glfwSetCursorPosCallback(window, &glfw_cb_motion_);
 	glfwSetMouseButtonCallback(window, &glfw_cb_button_);
@@ -155,6 +155,7 @@ namespace
 	// MOUSE POSITION TASK
 	void glfw_cb_motion_( GLFWwindow* aWindow, double aMouseXPos, double aMouseYPos ) {
 		MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
+
 		position->x = aMouseXPos;
 		position->y = aMouseYPos;
 
@@ -162,9 +163,8 @@ namespace
 	}
 
 	void glfw_cb_button_( GLFWwindow* aWindow, int aButton, int aAction, int mod) {
-		MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
-
 		if (GLFW_MOUSE_BUTTON_LEFT == aAction) {
+			MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
 			std::cout << "X:" << position->x << "Y:" << position->y << "\n";
 		}
 	}

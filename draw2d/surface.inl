@@ -35,8 +35,6 @@ std::size_t Surface::get_height() const noexcept
 inline
 std::size_t Surface::get_linear_index( std::size_t aX, std::size_t aY ) const noexcept
 {
-	//TODO: your implementation goes here
-	//TODO: your implementation goes here
-	//TODO: your implementation goes here
-	return 0; //TODO: remove this line when you implement this function.
+	int index = (5 * aX + aY) * 4;
+	return index;
 }
