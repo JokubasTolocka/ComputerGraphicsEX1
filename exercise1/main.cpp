@@ -23,11 +23,17 @@ namespace
 
 	void glfw_callback_key_( GLFWwindow*, int, int, int, int );
 	void glfw_cb_motion_( GLFWwindow*, double, double );
+	void glfw_cb_button_( GLFWwindow* , int , int, int );
 
 
 	struct GLFWCleanupHelper
 	{
 		~GLFWCleanupHelper();
+	};
+
+	struct MousePos {
+		double x;
+		double y;
 	};
 }
 
@@ -83,8 +89,12 @@ int main() try
 	auto const fbwidth = std::size_t(iwidth);
 	auto const fbheight = std::size_t(iheight);
 
+	MousePos position;
+
+	glfwSetWindowUserPointer(window, &position);
 	glfwSetKeyCallback( window, &glfw_callback_key_ );
 	glfwSetCursorPosCallback(window, &glfw_cb_motion_);
+	glfwSetMouseButtonCallback(window, &glfw_cb_button_);
 
 	glfwMakeContextCurrent( window );
 	glfwSwapInterval( 1 );
@@ -144,7 +154,19 @@ namespace
 	}
 	// MOUSE POSITION TASK
 	void glfw_cb_motion_( GLFWwindow* aWindow, double aMouseXPos, double aMouseYPos ) {
-		std::cout << "X:" << aMouseXPos << "Y:" << aMouseYPos << "\n";
+		MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
+		position->x = aMouseXPos;
+		position->y = aMouseYPos;
+
+		glfwSetWindowUserPointer(aWindow, position);
+	}
+
+	void glfw_cb_button_( GLFWwindow* aWindow, int aButton, int aAction, int mod) {
+		MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
+
+		if (GLFW_MOUSE_BUTTON_LEFT == aAction) {
+			std::cout << "X:" << position->x << "Y:" << position->y << "\n";
+		}
 	}
 
 }
