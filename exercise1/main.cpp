@@ -35,6 +35,11 @@ namespace
 		double x;
 		double y;
 	};
+
+	struct ClickPos {
+		double xMin = 0, yMin = 0, xMax = 0, yMax = 0;
+		bool isSecondClick = false;
+	};
 }
 
 int main() try
@@ -90,6 +95,8 @@ int main() try
 	auto const fbheight = std::size_t(iheight);
 
 	MousePos position;
+	ClickPos click;
+	glfwSetWindowUserPointer(window, &click);
 	glfwSetWindowUserPointer(window, &position);
 
 	glfwSetKeyCallback( window, &glfw_callback_key_ );
@@ -114,10 +121,26 @@ int main() try
 		// Draw scene
 		surface.clear();
 
+		ClickPos* clickPos = (ClickPos*)glfwGetWindowUserPointer(window);
+
+
+		if(clickPos->xMin > 0 && clickPos->xMax > 0) {
+			std::cout << "Xmin:" << clickPos->xMin << "yMin:" << clickPos->yMin << "\n";
+			std::cout << "Xmax:" << clickPos->xMax << "yMax:" << clickPos->yMax << "\n";
+			draw_rectangle_solid(surface, { (float)clickPos->xMin, (float)clickPos->yMin },{ (float)clickPos->xMax, (float)clickPos->yMax },{ 255, 255, 0 } );
+			clickPos->xMin = 0;
+			clickPos->yMin = 0;
+			clickPos->xMax = 0;
+			clickPos->yMax = 0;
+			glfwSetWindowUserPointer(window, clickPos);
+		}
+
+		// draw_rectangle_outline(surface, { 50.f, 300.f },{ 200.f, 450.f },{ 255, 0, 0 } );
+
 		//TODO: drawing code goes here
-		surface.set_pixel_srgb( 10, 100, { 255, 255, 255 } );
-		surface.set_pixel_srgb( 5, 80, { 255, 255, 255 } );
-		surface.set_pixel_srgb( 1, 10, { 255, 255, 255 } );
+		// surface.set_pixel_srgb( 10, 100, { 255, 255, 255 } );
+		// surface.set_pixel_srgb( 5, 80, { 255, 255, 255 } );
+		// surface.set_pixel_srgb( 1, 10, { 255, 255, 255 } );
 
 		context.draw( surface );
 
@@ -168,7 +191,21 @@ namespace
 	void glfw_cb_button_( GLFWwindow* aWindow, int aButton, int aAction, int mod) {
 		if (GLFW_MOUSE_BUTTON_LEFT == aAction) {
 			MousePos* position = (MousePos*)glfwGetWindowUserPointer(aWindow);
-			std::cout << "X:" << position->x << "Y:" << position->y << "\n";
+			ClickPos* clickPos = (ClickPos*)glfwGetWindowUserPointer(aWindow);
+			// std::cout << "X:" << position->x << "Y:" << position->y << "\n";
+			if (clickPos->isSecondClick != true) {
+				clickPos->xMin = position->x;
+				clickPos->yMin = position->y;
+				clickPos->isSecondClick = true;
+				std::cout << "Xmin:" << clickPos->xMin << "Ymin:" << clickPos->yMin << "isSecondClick: " << clickPos->isSecondClick << "\n";
+			} else {
+				clickPos->xMax = position->x;
+				clickPos->yMax = position->y;
+				clickPos->isSecondClick = false;
+				std::cout << "Xmax:" << clickPos->xMax << "Ymax:" << clickPos->yMax << "isSecondClick: " << clickPos->isSecondClick << "\n";
+			}
+
+			glfwSetWindowUserPointer(aWindow, clickPos);
 		}
 	}
 
