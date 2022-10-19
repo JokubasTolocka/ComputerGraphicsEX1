@@ -16,9 +16,11 @@ void Surface::set_pixel_srgb( std::size_t aX, std::size_t aY, ColorU8_sRGB const
 {
 	assert( aX < mWidth && aY < mHeight ); // IMPORTANT! This line must remain the first line in this function!
 
-	//TODO: your implementation goes here
-	//TODO: your implementation goes here
-	//TODO: your implementation goes here
+	size_t i = get_linear_index(aX, aY);
+	mSurface[i] = aColor.r;
+	mSurface[i + 1] = aColor.g;
+	mSurface[i + 2] = aColor.b;
+	mSurface[i + 3] = 0;
 }
 
 inline 
@@ -35,6 +37,6 @@ std::size_t Surface::get_height() const noexcept
 inline
 std::size_t Surface::get_linear_index( std::size_t aX, std::size_t aY ) const noexcept
 {
-	int index = (5 * aX + aY) * 4;
+	size_t index = (mWidth * aX + aY) * 4;
 	return index;
 }

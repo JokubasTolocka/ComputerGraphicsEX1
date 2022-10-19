@@ -115,6 +115,9 @@ int main() try
 		surface.clear();
 
 		//TODO: drawing code goes here
+		surface.set_pixel_srgb( 10, 100, { 255, 255, 255 } );
+		surface.set_pixel_srgb( 5, 80, { 255, 255, 255 } );
+		surface.set_pixel_srgb( 1, 10, { 255, 255, 255 } );
 
 		context.draw( surface );
 
